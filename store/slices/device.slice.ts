@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
-type StateType = {
+interface StateType {
   value: 'MOBILE' | 'TABLET' | 'LAPTOP' | 'PC' | null
 }
 

@@ -1,23 +1,21 @@
 "use client"
 import {useState} from "react";
-import {setUser} from "@/core/redux/slices/user.slice";
 import {userService} from "@/core/api/services/user.service";
 import {useDispatch} from "react-redux";
-import {createAction} from "@reduxjs/toolkit/src/createAction";
-import {Data} from "@/core/data/user.data";
+import {setUser} from "@/store/slices/user.slice";
+import {useRouter} from "next/navigation";
 
 export default function LoginForm() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
-  const setUser = createAction('user/setUser', (user: Data.User) => {
-    return { payload: user };
-  });
+  const router = useRouter()
 
   function handleLogin() {
     userService.login({username, password})
       .then(user => {
         dispatch(setUser(user))
+        router.push('/chat')
       })
       .catch(err => {
         console.log('err!!!', err)

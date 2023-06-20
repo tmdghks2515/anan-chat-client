@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
-type StateType = {
+interface StateType {
   value: 'MASTER' | 'SHOP_ADMIN' | 'MANAGER' | null
 }
 

@@ -1,7 +1,7 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {Data} from "@/core/data/user.data";
 
-type StateType = {
+interface StateType {
   value: Data.User | null
 }
 
