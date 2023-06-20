@@ -1,28 +1,14 @@
+'use client'
 import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import userSlice from "./slices/user.slice";
 import modeSlice from "./slices/mode.slice";
 import deviceSlice from "./slices/device.slice";
 import { persistReducer } from "redux-persist"
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
+import persistStore from "redux-persist/es/persistStore";
+import { Provider } from 'react-redux';
 
-const createNoopStorage = () => {
-  return {
-    getItem(_key: any) {
-      return Promise.resolve(null);
-    },
-    setItem(_key: any, value: any) {
-      return Promise.resolve(value);
-    },
-    removeItem(_key: any) {
-      return Promise.resolve();
-    }
-  }
-}
-
-const storage =
-  typeof window === 'undefined'
-    ? createNoopStorage()
-    : createWebStorage('local');
+const storage = createWebStorage('local');
 
 const persistConfig = {
   key: 'root',
@@ -49,10 +35,13 @@ const makeStore = () => {
   })
 }
 
-// store 생성
-const store = makeStore()
 
-// store 엑스포트
-export default store
+// store 생성 및 export
+export const store = makeStore()
+export const persistor = persistStore(store);
 
-export type RootState = ReturnType<typeof persistedReducer>;
+export const ReduxStoreProvider = ({ children }) => (
+    <Provider store={store}>{children}</Provider>
+)
+
+// export type RootState = ReturnType<typeof persistedReducer>;

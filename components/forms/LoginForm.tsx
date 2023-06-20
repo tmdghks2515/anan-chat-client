@@ -3,11 +3,16 @@ import {useState} from "react";
 import {setUser} from "@/core/redux/slices/user.slice";
 import {userService} from "@/core/api/services/user.service";
 import {useDispatch} from "react-redux";
+import {createAction} from "@reduxjs/toolkit/src/createAction";
+import {Data} from "@/core/data/user.data";
 
 export default function LoginForm() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
+  const setUser = createAction('user/setUser', (user: Data.User) => {
+    return { payload: user };
+  });
 
   function handleLogin() {
     userService.login({username, password})
