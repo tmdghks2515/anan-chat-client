@@ -1,8 +1,12 @@
 interface ChatService {
-    send: (params: {
+    sendMessage: (params: {
         content: string,
-        recipientId: number
+        chatId: number
     }) => Promise<void>
+
+    getChat: (params: {
+        participantIds: number[]
+    }) => Promise<Data.Chat>
 }
 
 export const chatService: ChatService

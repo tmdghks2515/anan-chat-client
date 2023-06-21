@@ -2,7 +2,7 @@
 import {useState} from "react";
 import {userService} from "@/core/api/services/user.service";
 import {useDispatch} from "react-redux";
-import {setUser} from "@/store/slices/user.slice";
+import {setUser} from "@/app/redux/slices/user.slice";
 import {useRouter} from "next/navigation";
 
 export default function LoginForm() {

@@ -1,7 +1,13 @@
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+'use client'
+import MainNav from "@/components/MainNav";
 
-    </main>
-  )
+const Home = () => {
+
+    return (
+        <main className='flex gap-3'>
+            <MainNav />
+        </main>
+    )
 }
+
+export default Home

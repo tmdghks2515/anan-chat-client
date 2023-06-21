@@ -19,4 +19,7 @@ const userSlice = createSlice({
 })
 
 export const { setUser, removeUser } = userSlice.actions
+
+// export const selectUserState = (state: AppState) => state.auth.authState;
+
 export default userSlice

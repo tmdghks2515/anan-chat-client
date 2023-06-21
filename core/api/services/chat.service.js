@@ -1,7 +1,11 @@
 import {api} from "../api";
 
 export const chatService = {
-    send(params) {
+    sendMessage(params) {
         return api.post('/chat/send', params)
+    },
+
+    getChat(params) {
+        return api.get('/chat/read', params)
     }
 }

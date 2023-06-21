@@ -2,7 +2,7 @@
 import {useState} from "react";
 import {useDispatch} from "react-redux";
 import {userService} from "@/core/api/services/user.service";
-import {setUser} from "@/store/slices/user.slice";
+import {setUser} from "@/app/redux/slices/user.slice";
 
 /*
     private int age;

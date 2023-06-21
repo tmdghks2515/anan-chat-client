@@ -7,6 +7,7 @@ import { persistReducer } from "redux-persist"
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
 import persistStore from "redux-persist/es/persistStore";
 import { Provider } from 'react-redux';
+import {createWrapper} from "next-redux-wrapper";
 
 const storage = createWebStorage('local');
 
@@ -16,13 +17,13 @@ const persistConfig = {
   whiteList: ['user', 'mode', 'device']
 }
 
-const reducers = combineReducers({
+const rootReducer = combineReducers({
   user: userSlice.reducer,
   mode: modeSlice.reducer,
   device: deviceSlice.reducer
 });
 
-const persistedReducer = persistReducer(persistConfig, reducers)
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 const makeStore = () => {
   return configureStore({
@@ -31,17 +32,28 @@ const makeStore = () => {
       getDefaultMiddleware({
         serializableCheck: false
       }),
-    // devTools: process.env.NODE_ENV === 'development'
+    devTools: process.env.NODE_ENV !== 'production'
   })
 }
 
 
 // store 생성 및 export
-export const store = makeStore()
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false
+      }),
+  devTools: process.env.NODE_ENV !== 'production'
+})
+
 export const persistor = persistStore(store);
 
-export const ReduxStoreProvider = ({ children }) => (
-    <Provider store={store}>{children}</Provider>
-)
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
+// export const ReduxStoreProvider = ({ children }) => (
+//     <Provider store={store}>{children}</Provider>
+// )
 
 // export type RootState = ReturnType<typeof persistedReducer>;

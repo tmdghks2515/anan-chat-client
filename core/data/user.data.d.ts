@@ -1,7 +1,5 @@
-import {Data} from "@/core/data/common.data";
-
-export namespace Data {
-  interface User {
+declare namespace Data {
+  export interface User {
     id: number,
     username: string,
     nickname: string,

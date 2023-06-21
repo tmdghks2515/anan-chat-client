@@ -1,10 +1,12 @@
-import Chat from "./Chat";
+import Chat from "../../components/Chat";
 
-export default function ChatPage() {
+const ChatPage = () => {
 
   return <main>
-    <div className='bg-red-500 flex flex-col items-center'>
+    <div className='flex flex-col items-center'>
       <Chat />
     </div>
   </main>
 }
+
+export default ChatPage
