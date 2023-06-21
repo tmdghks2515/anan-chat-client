@@ -1,6 +1,5 @@
 declare namespace Data {
   export interface User {
-    id: number,
     username: string,
     nickname: string,
     age: number,

@@ -1,19 +1,19 @@
 'use client'
 import {useEffect, useState} from "react"
 import {useSelector} from "react-redux"
-import {useRouter} from "next/navigation"
-import {Data} from "@/core/data/message.data";
+import {useRouter, useParams} from "next/navigation"
 
 const Chat = () => {
   const [recipientUsername, setRecipientUsername] = useState('')
   const [content, setContent] = useState('')
   const [messages, setMessages] = useState<Data.Message[]>([])
-  const [socket, setSocket] = useState<WebSocket | null>(new WebSocket('ws://localhost:8081/websocket'))
+  const [socket, setSocket] = useState<WebSocket | null>(new WebSocket('ws://localhost:8080/websocket'))
   const user = useSelector(state => state.user.value)
   const router = useRouter()
+  const { id } = useParams()
 
   useEffect(() => {
-
+    console.log('1111111', id)
 
     if (!!socket) {
       // Event listeners and handling logic
@@ -66,7 +66,7 @@ const Chat = () => {
 
     <div>
       { messages.map(message => <div key={message.id}>
-        { message.sender.id === user.id ?
+        { message.sender.username === user.username ?
             <div className='text-right'>
               { `${message.content}` }
             </div> :

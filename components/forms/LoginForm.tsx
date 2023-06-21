@@ -15,7 +15,7 @@ export default function LoginForm() {
     userService.login({username, password})
       .then(user => {
         dispatch(setUser(user))
-        router.push('/chat')
+        router.push('/')
       })
       .catch(err => {
         console.log('err!!!', err)

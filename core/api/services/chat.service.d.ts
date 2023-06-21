@@ -5,7 +5,7 @@ interface ChatService {
     }) => Promise<void>
 
     getChat: (params: {
-        participantIds: number[]
+        participants: string[]
     }) => Promise<Data.Chat>
 }
 

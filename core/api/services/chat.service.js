@@ -6,6 +6,6 @@ export const chatService = {
     },
 
     getChat(params) {
-        return api.get('/chat/read', params)
+        return api.post('/chat/get', params)
     }
 }

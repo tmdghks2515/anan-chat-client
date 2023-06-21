@@ -1,11 +1,13 @@
 'use client'
 import {useEffect, useState} from "react";
-import {Data} from "@/core/data/user.data";
 import {userService} from "@/core/api/services/user.service";
+import {chatService} from "@/core/api/services/chat.service";
+import {useRouter} from "next/navigation";
 
 const NewChat = () => {
     const [users, setUsers] = useState<Data.User[]>([])
     const [participants, setParticipants] = useState<Data.User[]>([])
+    const router = useRouter()
 
     useEffect(() => {
         userService.list()
@@ -14,12 +16,12 @@ const NewChat = () => {
     }, [])
 
     const handleAdd = (user: Data.User) => {
-        if (!participants.some(v => v.id === user.id))
+        if (!participants.some(v => v.username === user.username))
             setParticipants(prev => [...prev, user])
     }
 
     const handleRemove = (user: Data.User) => {
-        setParticipants(prev => prev.filter(v => v.id !== user.id))
+        setParticipants(prev => prev.filter(v => v.username !== user.username))
     }
 
     const handleCreate = () => {
@@ -27,7 +29,13 @@ const NewChat = () => {
             alert('참가자를 선택해주세요')
             return
         }
-
+        chatService.getChat({ participants: participants.map(v => v.username) })
+          .then(res => {
+              router.push(`/chat/${res.id}`)
+          })
+          .catch(err => {
+              console.log('err: ', err)
+          })
     }
 
     return <div className='flex flex-col gap-3'>
@@ -37,7 +45,7 @@ const NewChat = () => {
             <span>채팅 참가자 목록: </span>
             <div className='flex gap-2'>
                 { participants.map(participant => (
-                    <span key={participant.id} onClick={() => handleRemove(participant)} className='underline cursor-pointer text-blue-500'>
+                    <span key={participant.username} onClick={() => handleRemove(participant)} className='underline cursor-pointer text-blue-500'>
                         { participant.nickname }
                     </span>)
                 )}
@@ -48,7 +56,7 @@ const NewChat = () => {
             <span>회원 목록: </span>
             <div className='flex gap-2'>
                 { users.map(user => (
-                    <span key={user.id} onClick={() => handleAdd(user)} className='underline cursor-pointer text-blue-500'>
+                    <span key={user.username} onClick={() => handleAdd(user)} className='underline cursor-pointer text-blue-500'>
                         { user.nickname }
                     </span>)
                 )}
