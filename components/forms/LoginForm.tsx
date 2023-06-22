@@ -17,9 +17,6 @@ export default function LoginForm() {
         dispatch(setUser(user))
         router.push('/')
       })
-      .catch(err => {
-        console.log('err!!!', err)
-      })
   }
 
   return <div className='flex flex-col w-[30rem] mx-auto gap-2'>

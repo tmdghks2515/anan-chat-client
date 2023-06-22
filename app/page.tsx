@@ -1,11 +1,13 @@
 'use client'
 import MainNav from "@/components/MainNav";
+import Chats from "@/components/chat/Chats";
 
 const Home = () => {
 
     return (
-        <main className='flex gap-3'>
+        <main>
             <MainNav />
+            <Chats />
         </main>
     )
 }

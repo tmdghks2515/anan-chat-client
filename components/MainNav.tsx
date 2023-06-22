@@ -16,7 +16,6 @@ const MainNav = () => {
                 alert('로그아웃 됨')
                 dispatch(removeUser())
             })
-            .catch(err => { console.log('err: ', err) })
     }
 
     useEffect(() => {

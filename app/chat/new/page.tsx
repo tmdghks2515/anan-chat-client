@@ -12,7 +12,6 @@ const NewChat = () => {
     useEffect(() => {
         userService.list()
             .then(res => { setUsers(res) })
-            .catch(err => { console.log('error: ', err) })
     }, [])
 
     const handleAdd = (user: Data.User) => {
@@ -32,9 +31,6 @@ const NewChat = () => {
         chatService.getChat({ participants: participants.map(v => v.username) })
           .then(res => {
               router.push(`/chat/${res.id}`)
-          })
-          .catch(err => {
-              console.log('err: ', err)
           })
     }
 

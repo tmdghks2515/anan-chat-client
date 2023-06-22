@@ -1,11 +1,12 @@
 import axios from "axios";
 import {parse, stringify} from 'qs'
-// import store from "../redux/store";
-// import {removeUser} from "../redux/slices/user.slice";
+import {store} from "../../app/redux/store";
+import {removeUser} from "../../app/redux/slices/user.slice";
 
 const isClient = typeof window !== 'undefined'
-// const baseURL = isClient ? process.env.REACT_APP_PROTOCOL + process.env.REACT_APP_API_HOST : ''
-const baseURL = 'http://localhost:8080/api'
+const baseURL = isClient ?
+    process.env.NEXT_PUBLIC_PROTOCOL + process.env.NEXT_PUBLIC_API_HOST :
+    process.env.PROTOCOL + process.env.API_HOST
 
 const instance = axios.create({
     baseURL,
@@ -50,38 +51,29 @@ const get = (url, data = {}) => {
 
 const errTransformer = (res) => {
     if (!res) { return {} }
-    if (res.status === 400 || res.status === 500 ) {
-        return Promise.reject(new ApiError(res))
-    } else if (res.status === 401) {
-        if (isClient) {
-            redirectLogin()
-        }
-    } else if (res.status === 403) {
+    if ([401, 403].includes(res.status)) {
         if (isClient) {
             redirectLogin()
         }
     }
-    return res
+    return Promise.reject(new ApiError(res))
 }
 
 export class ApiError {
-    result = 0
-    resultMsg = ''
+    status = 0
+    message = ''
+    showErrMsg = false
 
-    constructor({ status, data: {message} }) {
-        this.result = status
-        this.resultMsg = message
-    }
-
-    get isShowErrorMessage () {
-        return this.result === 400
+    constructor(res) {
+        this.status = res.status
+        this.message = res.data.message
+        this.showErrMsg = res.data.showErrMsg
     }
 }
 
 export function redirectLogin() {
-    // store.dispatch(removeUser())
-    location.href = '/signIn'
-    return Promise.resolve({item: {}, items: []})
+    store.dispatch(removeUser())
+    location.href = '/login'
 }
 
 export const api = {

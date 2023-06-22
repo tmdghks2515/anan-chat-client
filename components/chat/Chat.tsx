@@ -2,21 +2,29 @@
 import {useEffect, useState} from "react"
 import {useSelector} from "react-redux"
 import {useRouter, useParams} from "next/navigation"
+import {chatService} from "@/core/api/services/chat.service"
 
 const Chat = () => {
-  const [recipientUsername, setRecipientUsername] = useState('')
+  const [chat, setChat] = useState<Data.Chat | null>()
+  const [socket, setSocket] = useState<WebSocket | null>()
   const [content, setContent] = useState('')
   const [messages, setMessages] = useState<Data.Message[]>([])
-  const [socket, setSocket] = useState<WebSocket | null>(new WebSocket('ws://localhost:8080/websocket'))
   const user = useSelector(state => state.user.value)
   const router = useRouter()
   const { id } = useParams()
 
   useEffect(() => {
-    console.log('1111111', id)
+    if (!id)
+      router.push('/login')
 
+    // chat 조회
+    fetchChat()
+    // messages 조회
+    fetchMessages()
+  }, [])
+
+  useEffect(() => {
     if (!!socket) {
-      // Event listeners and handling logic
       socket.onopen = () => {
         console.log('WebSocket connection established')
       }
@@ -37,11 +45,11 @@ const Chat = () => {
         socket.close()
       }
     }
-  }, [])
+  }, [socket])
 
   const handleSend = () => {
     // Emit message to the WebSocket server
-    if (!content.trim() || !socket)
+    if (!content.trim() || !socket || !chat)
       return
 
     if (!user) {
@@ -51,19 +59,45 @@ const Chat = () => {
     }
 
     socket.send(JSON.stringify({
-      content, recipientUsername
+      content,
+      chatId: chat.id
     }))
 
     setContent('')
   }
 
-  return <div className='w-[30rem] flex flex-col gap-3'>
-    <input
-        value={recipientUsername}
-        onChange={e => setRecipientUsername(e.target.value)}
-        placeholder='수신인 id'
-    />
+  const fetchChat = () => {
+    chatService.readChat({ chatId: Number(id) })
+        .then(data => {
+          setChat(data)
+          setSocket(new WebSocket(`ws://${process.env.NEXT_PUBLIC_API_HOST}/websocket/${id}`))
+        })
+        .catch(err => {
+          console.log('err', err)
+          if (err.showErrMsg)
+            alert(err.message)
+          else
+            alert('오류가 발생하였습니다')
+        })
+  }
 
+  const fetchMessages = () => {
+    chatService.getMessages({
+      chatId: Number(id),
+      size: 30,
+      page: 0,
+      sort: 'regTs,desc'
+    }).then(data => {
+      setMessages(data.list)
+    }).catch(err => {
+      if (err.showErrMsg)
+        alert(err.message)
+      else
+        alert('오류가 발생하였습니다')
+    })
+  }
+
+  return <div className='w-[30rem] flex flex-col gap-3'>
     <div>
       { messages.map(message => <div key={message.id}>
         { message.sender.username === user.username ?
@@ -80,6 +114,7 @@ const Chat = () => {
     <textarea
         value={content}
         onChange={e => setContent(e.target.value)}
+        onKeyDown={e => { if (e.key === 'Enter') handleSend() }}
         placeholder='내용'
     />
     <button onClick={handleSend}>

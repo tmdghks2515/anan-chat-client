@@ -7,5 +7,17 @@ export const chatService = {
 
     getChat(params) {
         return api.post('/chat/get', params)
+    },
+
+    readChat(params) {
+        return api.get('/chat/read', params)
+    },
+
+    getMessages(params) {
+        return api.get('/chat/messages', params)
+    },
+
+    getMyChats(params) {
+        return api.get('/chat/myChats')
     }
 }
