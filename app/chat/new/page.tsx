@@ -28,9 +28,9 @@ const NewChat = () => {
             alert('참가자를 선택해주세요')
             return
         }
-        chatService.getChat({ participants: participants.map(v => v.username) })
+        chatService.getChatId({ participants: participants.map(v => v.username) })
           .then(res => {
-              router.push(`/chat/${res.id}`)
+              router.push(`/chat/${res}`)
           })
     }
 

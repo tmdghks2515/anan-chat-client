@@ -5,8 +5,8 @@ export const chatService = {
         return api.post('/chat/send', params)
     },
 
-    getChat(params) {
-        return api.post('/chat/get', params)
+    getChatId(params) {
+        return api.post('/chat/getId', params)
     },
 
     readChat(params) {

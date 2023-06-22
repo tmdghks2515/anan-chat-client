@@ -6,8 +6,6 @@ import deviceSlice from "./slices/device.slice";
 import { persistReducer } from "redux-persist"
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
 import persistStore from "redux-persist/es/persistStore";
-import { Provider } from 'react-redux';
-import {createWrapper} from "next-redux-wrapper";
 
 const storage = createWebStorage('local');
 

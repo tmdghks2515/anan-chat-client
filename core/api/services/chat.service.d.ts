@@ -4,9 +4,9 @@ interface ChatService {
         chatId: number
     }) => Promise<void>
 
-    getChat: (params: {
+    getChatId: (params: {
         participants: string[]
-    }) => Promise<Data.Chat>
+    }) => Promise<number>
 
     readChat: (params: {
         chatId: number
