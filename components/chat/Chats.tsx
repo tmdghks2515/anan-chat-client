@@ -16,7 +16,8 @@ const Chats = () => {
     }, [])
 
     return <>
-        { chats?.map(chat => (
+        { user && chats && chats.length > 0 &&
+            chats.map(chat => (
             <div key={chat.id} onClick={() => { router.push(`/chat/${chat.id}`) }} className='text-blue-400 cursor-pointer'>
                 { chat.participants.map(participant => (
                     participant.username !== user.username && <span key={participant.username}>{' ' + participant.nickname}</span>

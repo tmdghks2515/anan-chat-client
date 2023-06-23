@@ -9,6 +9,7 @@ const Chat = () => {
   const [socket, setSocket] = useState<WebSocket | null>()
   const [content, setContent] = useState('')
   const [messages, setMessages] = useState<Data.Message[]>([])
+  const [targetLang, setTargetLang] = useState<'ko' | 'ja' | 'en' | ''>('')
   const user = useSelector(state => state.user.value)
   const router = useRouter()
   const { id } = useParams()
@@ -20,7 +21,7 @@ const Chat = () => {
     // chat 조회
     fetchChat()
     // messages 조회
-    fetchMessages()
+    // fetchMessages()
   }, [])
 
   useEffect(() => {
@@ -47,6 +48,10 @@ const Chat = () => {
     }
   }, [socket])
 
+  useEffect(() => {
+    fetchMessages()
+  }, [targetLang])
+
   const handleSend = () => {
     // Emit message to the WebSocket server
     if (!content.trim() || !socket || !chat)
@@ -60,6 +65,7 @@ const Chat = () => {
 
     socket.send(JSON.stringify({
       content,
+      targetLang,
       chatId: chat.id
     }))
 
@@ -84,6 +90,7 @@ const Chat = () => {
   const fetchMessages = () => {
     chatService.getMessages({
       chatId: Number(id),
+      targetLang,
       size: 30,
       page: 0,
       sort: 'regTs,desc'
@@ -97,9 +104,40 @@ const Chat = () => {
     })
   }
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleSend()
+    }
+  }
+
+  const handleChangeLang = async (lang) => {
+    setTargetLang(lang)
+  }
+
   return <div className='w-[30rem] flex flex-col gap-3'>
+    {/* 언어 설정 */}
+    <div className='flex gap-3'>
+      <span>언어 :</span>
+      <select onChange={e => handleChangeLang(e.target.value)}>
+        <option value=''>
+          번역안함
+        </option>
+        <option value='ko'>
+          한국어
+        </option>
+        <option value='ja'>
+          일본어
+        </option>
+        <option value='en'>
+          영어
+        </option>
+      </select>
+    </div>
+
     <div>
-      { messages.map(message => <div key={message.id}>
+      { user &&
+        messages.map(message => <div key={message.id}>
         { message.sender.username === user.username ?
             <div className='text-right'>
               { `${message.content}` }
@@ -114,7 +152,7 @@ const Chat = () => {
     <textarea
         value={content}
         onChange={e => setContent(e.target.value)}
-        onKeyDown={e => { if (e.key === 'Enter') handleSend() }}
+        onKeyDown={handleKeyDown}
         placeholder='내용'
     />
     <button onClick={handleSend}>

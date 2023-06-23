@@ -14,6 +14,7 @@ interface ChatService {
 
     getMessages: (params: {
         chatId: number,
+        targetLang: 'ko' | 'ja' | 'en' | '',
         page: number,
         size: number,
         sort: string
