@@ -50,13 +50,15 @@ const NewChat = () => {
 
         <div>
             <span>회원 목록: </span>
-            <div className='flex gap-2'>
-                { users.map(user => (
-                    <span key={user.username} onClick={() => handleAdd(user)} className='underline cursor-pointer text-blue-500'>
-                        { user.nickname }
-                    </span>)
-                )}
-            </div>
+            { users && users.length > 0 &&
+                <div className='flex gap-2'>
+                    { users.map(user => (
+                        <span key={user.username} onClick={() => handleAdd(user)} className='underline cursor-pointer text-blue-500'>
+                            { user.nickname }
+                        </span>)
+                    )}
+                </div>
+            }
         </div>
 
         <div>

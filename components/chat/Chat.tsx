@@ -20,12 +20,10 @@ const Chat = () => {
 
     // chat 조회
     fetchChat()
-    // messages 조회
-    // fetchMessages()
   }, [])
 
   useEffect(() => {
-    if (!!socket) {
+    if (socket) {
       socket.onopen = () => {
         console.log('WebSocket connection established')
       }
@@ -38,7 +36,9 @@ const Chat = () => {
 
       socket.onclose = () => {
         console.log('WebSocket connection closed')
-        // Handle the WebSocket connection closed event if needed
+        if (chat) {
+          setSocket(new WebSocket(`ws://${process.env.NEXT_PUBLIC_API_HOST}/websocket/${user.username}/${id}`))
+        }
       }
 
       // Clean up the WebSocket connection on component unmount
@@ -53,8 +53,10 @@ const Chat = () => {
   }, [targetLang])
 
   const handleSend = () => {
-    // Emit message to the WebSocket server
-    if (!content.trim() || !socket || !chat)
+    // if (!socket || socket.CLOSED) {
+    //   setSocket(new WebSocket(`ws://${process.env.NEXT_PUBLIC_API_HOST}/websocket/${user.username}/${id}`))
+    // }
+    if (!content.trim() || !chat || !socket || !socket.OPEN)
       return
 
     if (!user) {
@@ -63,6 +65,7 @@ const Chat = () => {
       return
     }
 
+    // Emit message to the WebSocket server
     socket.send(JSON.stringify({
       content,
       targetLang,
@@ -76,7 +79,7 @@ const Chat = () => {
     chatService.readChat({ chatId: Number(id) })
         .then(data => {
           setChat(data)
-          setSocket(new WebSocket(`ws://${process.env.NEXT_PUBLIC_API_HOST}/websocket/${id}`))
+          setSocket(new WebSocket(`ws://${process.env.NEXT_PUBLIC_API_HOST}/websocket/${user.username}/${id}`))
         })
         .catch(err => {
           console.log('err', err)
