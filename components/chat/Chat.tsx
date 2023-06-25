@@ -139,7 +139,7 @@ const Chat = () => {
     </div>
 
     <div>
-      { user &&
+      { user && messages &&
         messages.map(message => <div key={message.id}>
         { message.sender.username === user.username ?
             <div className='text-right'>

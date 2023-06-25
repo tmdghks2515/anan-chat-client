@@ -1,0 +1,36 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+    commands:
+      # Install dependencies
+      - yarn
+
+  pre_build:
+    commands:
+      # Build the Next.js app
+      - echo Build started on `date`
+      - yarn build
+
+  build:
+    commands:
+      # Create a Docker image
+      - docker build -t 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest .
+
+  post_build:
+    commands:
+      # Push the Docker image to a container registry (e.g., Amazon ECR)
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com
+      - docker push 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest
+      - printf '[{"name":"kf-front","imageUri":"%s"}]' 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest > imagedefinitions.json
+
+artifacts:
+  files: imagedefinitions.json
+
+cache:
+  paths:
+    - '/root/.m2/**/*'
