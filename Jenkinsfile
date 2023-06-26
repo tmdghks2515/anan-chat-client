@@ -1,24 +1,34 @@
 pipeline {
-    agent any
-    stages {
+  agent {
+    label 'linux' // Specify the label of the Jenkins agent running on the Linux server
+  }
 
-        stage('docker build'){
-            steps{
-                script{
-                    docker.build('kifarm-front')
-                }
-            }
-        }
-
-        stage('docker run'){
-            steps{
-                sh 'docker ps -f name=kifarm-front -q | xargs --no-run-if-empty docker container stop'
-                sh 'docker container ls -a -f name=kifarm-front -q | xargs -r docker container rm'
-                sh 'docker images --no-trunc --all --quiet --filter="dangling=true" | xargs --no-run-if-empty docker rmi'
-                sh 'docker run -d --name kifarm-front -p 3000:3000 kifarm-front:latest'
-
-            }
-        }
-
+  stages {
+    stage('Checkout') {
+      steps {
+        // Checkout code from CodeCommit
+        git credentialsId: 'codecommit-key', url: 'https://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos/klovers-client'
+      }
     }
+
+    stage('Build and Push') {
+      steps {
+        // Build the Docker image and push to ECR
+        script {
+          sh 'docker build -t klovers-client:${env.BUILD_NUMBER} .'
+          withCredentials([string(credentialsId: 'codecommit-key', variable: 'codecommit-key')]) {
+            sh 'docker login -u AWS -p "$codecommit-key" 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com'
+            sh 'docker push 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:${env.BUILD_NUMBER}'
+          }
+        }
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        // Run the Docker container on the Linux server
+        sh 'docker run -d -p 3000:3000 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:${env.BUILD_NUMBER}'
+      }
+    }
+  }
 }
