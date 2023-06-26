@@ -17,10 +17,10 @@ pipeline {
           withCredentials([[
                 $class: "AmazonWebServicesCredentialsBinding",
                 credentialsId: "klovers-credential",
-                accessKeyVariable: 'klovers-git-user-at-106809242629',
-                secretKeyVariable: 'F0XlhwUO6ld0hTnsyZGb3EtR0Lp7hpQYErwHGMbWF9g='
+                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
             ]]) {
-                docker.withRegistry('https://106809242629.dkr.ecr.ap-northeast-2.amazonaws.com', 'klovers-credential') {
+                docker.withRegistry('https://106809242629.dkr.ecr.ap-northeast-2.amazonaws.com', 'codecommit-key') {
                     // Your pipeline steps that require Docker login
                     sh 'docker push 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest'
                 }
