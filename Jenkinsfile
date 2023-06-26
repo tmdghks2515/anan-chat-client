@@ -2,12 +2,12 @@ pipeline {
   agent any
 
   stages {
-    stage('Checkout') {
-      steps {
-        // Checkout code from CodeCommit
-        git credentialsId: 'klovers-credential', url: 'https://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos/klovers-client'
-      }
-    }
+//     stage('Checkout') {
+//       steps {
+//         // Checkout code from CodeCommit
+//         git credentialsId: 'klovers-credential', url: 'https://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos/klovers-client'
+//       }
+//     }
 
     stage('Build and Push') {
       steps {
