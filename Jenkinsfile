@@ -5,7 +5,7 @@ pipeline {
     stage('Checkout') {
       steps {
         // Checkout code from CodeCommit
-        git credentialsId: 'klovers-credential', url: 'https://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos/klovers-client'
+        git credentialsId: 'codecommit-key', url: 'https://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos/klovers-client'
       }
     }
 
@@ -14,8 +14,8 @@ pipeline {
         // Build the Docker image and push to ECR
         script {
           sh 'docker build -t klovers-client:latest .'
-          withCredentials([string(credentialsId: 'codecommit-key', variable: 'codecommit-key')]) {
-            sh 'docker login -u AWS -p "$codecommit-key" 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com'
+          withCredentials([string(credentialsId: 'codecommit-key', variable: 'ECR_CREDENTIALS')]) {
+            sh 'docker login -u AWS -p "$ECR_CREDENTIALS" 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com'
             sh 'docker push 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest'
           }
         }
