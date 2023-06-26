@@ -5,7 +5,7 @@ pipeline {
     stage('Checkout') {
       steps {
         // Checkout code from CodeCommit
-        git credentialsId: 'codecommit-key', url: 'https://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos/klovers-client'
+        git credentialsId: 'codecommit-key', url: 'https://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos/klovers-client', branches: [[name: '*/main']],
       }
     }
 
