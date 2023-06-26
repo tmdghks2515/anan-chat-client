@@ -14,7 +14,7 @@ pipeline {
         // Build the Docker image and push to ECR
         script {
           sh 'docker build -t klovers-client:latest .'
-          withCredentials([usernamePassword(credentialsId: 'codecommit-key', variable: 'ECR_CREDENTIALS')]) {
+          withCredentials([[$class: "AmazonWebServicesCredentialsBinding", credentialsId: "klovers-credential", variable: 'ECR_CREDENTIALS']]) {
             sh 'docker login -u AWS -p "$ECR_CREDENTIALS" 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com'
             sh 'docker push 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest'
           }
