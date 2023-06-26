@@ -1,7 +1,5 @@
 pipeline {
-  agent {
-    label 'linux' // Specify the label of the Jenkins agent running on the Linux server
-  }
+  agent any
 
   stages {
     stage('Checkout') {
