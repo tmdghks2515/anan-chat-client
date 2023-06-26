@@ -20,7 +20,7 @@ pipeline {
                 accessKeyVariable: 'klovers-git-user-at-106809242629',
                 secretKeyVariable: 'F0XlhwUO6ld0hTnsyZGb3EtR0Lp7hpQYErwHGMbWF9g='
             ]]) {
-                docker.withRegistry('https://106809242629.dkr.ecr.ap-northeast-2.amazonaws.com', 'ecr:ap-northeast-2:klovers-credential') {
+                docker.withRegistry('https://106809242629.dkr.ecr.ap-northeast-2.amazonaws.com', 'klovers-credential') {
                     // Your pipeline steps that require Docker login
                     sh 'docker push 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest'
                 }
