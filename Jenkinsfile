@@ -14,19 +14,19 @@ pipeline {
         // Build the Docker image and push to ECR
         script {
           sh 'docker build -t klovers-client:latest .'
-          withCredentials([[
-                $class: "AmazonWebServicesCredentialsBinding",
-                credentialsId: "klovers-credential",
-                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-            ]]) {
-                docker.withRegistry('https://106809242629.dkr.ecr.ap-northeast-2.amazonaws.com', 'codecommit-key') {
-                    // Your pipeline steps that require Docker login
-                    sh 'docker push 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest'
-                }
-                // sh 'docker login -u AWS -p "$ECR_CREDENTIALS" 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com'
+//          withCredentials([[
+//                $class: "AmazonWebServicesCredentialsBinding",
+//                credentialsId: "klovers-credential",
+//                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+//                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+//            ]]) {
+              docker.withRegistry('https://106809242629.dkr.ecr.ap-northeast-2.amazonaws.com', 'ecr:ap-northeast-2:aws-ecr') {
+                  // Your pipeline steps that require Docker login
+                  sh 'docker push 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest'
+              }
+              // sh 'docker login -u AWS -p "$ECR_CREDENTIALS" 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com'
           }
-        }
+//        }
       }
     }
 
