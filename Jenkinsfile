@@ -27,7 +27,7 @@ pipeline {
           def dockerImage = docker.build(env.DOCKER_IMAGE_NAME, "-f ${env.DOCKERFILE_PATH} .")
           withCredentials([usernamePassword(credentialsId: 'aws-ecr', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
             sh 'aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $DOCKER_REGISTRY'
-            docker.withRegistry(env.DOCKER_REGISTRY, 'ecr:ap-northeast-2') {
+            docker.withRegistry(env.DOCKER_REGISTRY, 'aws-ecr') {
               dockerImage.push()
             }
           }
