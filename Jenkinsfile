@@ -9,6 +9,7 @@ pipeline {
     DOCKER_IMAGE_NAME = "${DOCKER_REGISTRY}/klovers-client"
     DOCKERFILE_PATH = 'Dockerfile'
     ECR_REGISTRY_URL = "${DOCKER_REGISTRY}/klovers-client"
+    CONTAINER_NAME="klovers-client"
   }
 
   stages {
@@ -38,7 +39,10 @@ pipeline {
     stage('Deploy') {
       steps {
         // Run the Docker container on the Linux server
-        sh 'docker run -d -p 3000:3000 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest'
+        sh 'docker ps -f name=$CONTAINER_NAME -q | xargs --no-run-if-empty docker container stop'
+        sh 'docker container ls -a -f name=$CONTAINER_NAME -q | xargs -r docker container rm'
+        sh 'docker images --no-trunc --all --quiet --filter="dangling=true" | xargs --no-run-if-empty docker rmi'
+        sh 'docker run -d --name $CONTAINER_NAME -p 3000:3000 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest'
       }
     }
   }
