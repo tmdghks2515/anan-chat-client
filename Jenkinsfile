@@ -24,7 +24,7 @@ pipeline {
                   // Your pipeline steps that require Docker login
                   sh 'docker push 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest'
               }*/
-              sh 'aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com'
+              sh 'aws ecr get-login-password --region ap-northeast-2 | docker login -u AWS -p $(aws ecr get-login-password --region ap-northeast-2) 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com'
               sh 'docker push 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest'
               // sh 'docker login -u AWS -p "$ECR_CREDENTIALS" 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com'
           }
