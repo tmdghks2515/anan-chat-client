@@ -14,8 +14,11 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        // Checkout code from CodeCommit
-        git credentialsId: 'codecommit-key', url: 'https://git-codecommit.ap-northeast-2.amazonaws.com/v1/repos/klovers-client', branch: 'main'
+        checkout([
+                $class: 'GitSCM',
+                branches: [[name: 'main']],
+                userRemoteConfigs: [[url: env.CODECOMMIT_REPO_URL, credentialsId: env.CODECOMMIT_CREDENTIALS]]
+        ])
       }
     }
 
@@ -23,20 +26,11 @@ pipeline {
       steps {
         // Build the Docker image and push to ECR
         script {
-        // sh 'docker build -t klovers-client:latest .'
           def dockerImage = docker.build(env.DOCKER_IMAGE_NAME, "-f ${env.DOCKERFILE_PATH} .")
           withCredentials([usernamePassword(credentialsId: 'aws-ecr', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
             sh 'aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $DOCKER_REGISTRY'
             dockerImage.push()
-/*            docker.withRegistry('https://' + env.DOCKER_REGISTRY, 'aws-ecr') {
-              dockerImage.push()
-            }*/
           }
-/*              docker.withRegistry('https://106809242629.dkr.ecr.ap-northeast-2.amazonaws.com', 'aws-ecr') {
-                  // Your pipeline steps that require Docker login
-                  // sh 'aws ecr get-login-password --region ap-northeast-2 | docker login -u AWS -p $(aws ecr get-login-password --region ap-northeast-2) 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com'
-                  sh 'docker push 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest'
-              }*/
           }
       }
     }
