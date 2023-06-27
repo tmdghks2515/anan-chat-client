@@ -19,7 +19,7 @@ export default function LoginForm() {
       })
   }
 
-  return <div className='flex flex-col w-[30rem] mx-auto gap-2'>
+  return <div className='flex flex-col w-[100%] p-2 md:w-[30rem] mx-auto gap-2'>
     <input
       name='username'
       onChange={e => setUsername(e.target.value)}
