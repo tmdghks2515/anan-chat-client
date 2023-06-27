@@ -42,7 +42,7 @@ pipeline {
         sh 'docker ps -f name=$CONTAINER_NAME -q | xargs --no-run-if-empty docker container stop'
         sh 'docker container ls -a -f name=$CONTAINER_NAME -q | xargs -r docker container rm'
         sh 'docker images --no-trunc --all --quiet --filter="dangling=true" | xargs --no-run-if-empty docker rmi'
-        sh 'docker run -d --name $CONTAINER_NAME -p 3000:3000 106809242629.dkr.ecr.ap-northeast-2.amazonaws.com/klovers-client:latest'
+        sh 'docker run -d --name $CONTAINER_NAME -p 3000:3000 $DOCKER_IMAGE_NAME:latest'
       }
     }
   }
