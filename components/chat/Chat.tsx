@@ -118,7 +118,7 @@ const Chat = () => {
     setTargetLang(lang)
   }
 
-  return <div className='w-[30rem] flex flex-col gap-3'>
+  return <div className='w-[100%] p-2 md:w-[30rem] flex flex-col gap-3'>
     {/* 언어 설정 */}
     <div className='flex gap-3'>
       <span>언어 :</span>
